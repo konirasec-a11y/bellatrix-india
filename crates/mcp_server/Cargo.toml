@@ -1,0 +1,22 @@
+[package]
+name = "mcp_server"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+core_domain = { path = "../core_domain" }
+application = { path = "../application" }
+sast_engine = { path = "../sast_engine" }
+attack_graph = { path = "../attack_graph" }
+malware_crafter = { path = "../malware_crafter" }
+sca_engine = { path = "../sca_engine" }
+tokio = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+anyhow = { workspace = true }
+async-trait = { workspace = true }
+tracing = { workspace = true }
+uuid = { workspace = true }
+
+[dev-dependencies]
+mockall = { workspace = true }

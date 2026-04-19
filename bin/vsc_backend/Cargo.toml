@@ -1,0 +1,22 @@
+[package]
+name = "vsc_backend"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "vsc_backend"
+path = "src/main.rs"
+
+[dependencies]
+core_domain = { path = "../../crates/core_domain" }
+application = { path = "../../crates/application" }
+sast_engine = { path = "../../crates/sast_engine" }
+attack_graph = { path = "../../crates/attack_graph" }
+malware_crafter = { path = "../../crates/malware_crafter" }
+mcp_server = { path = "../../crates/mcp_server" }
+tokio = { workspace = true }
+anyhow = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }

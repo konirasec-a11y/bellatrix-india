@@ -1,0 +1,23 @@
+[package]
+name = "cli"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "bellatrix"
+path = "src/main.rs"
+
+[dependencies]
+core_domain = { path = "../../crates/core_domain" }
+application = { path = "../../crates/application" }
+sast_engine = { path = "../../crates/sast_engine" }
+attack_graph = { path = "../../crates/attack_graph" }
+malware_crafter = { path = "../../crates/malware_crafter" }
+sca_engine = { path = "../../crates/sca_engine" }
+mcp_server = { path = "../../crates/mcp_server" }
+tokio = { workspace = true }
+anyhow = { workspace = true }
+serde_json = { workspace = true }
+clap = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }

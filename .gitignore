@@ -1,0 +1,45 @@
+# Rust build artifacts
+target/
+# Cargo.lock é commitado (workspace com binários)
+
+# Docker secrets (nunca comitar chaves)
+docker/secrets/
+.env
+.env.*
+!.env.example
+
+# SQLite state
+*.db
+*.db-shm
+*.db-wal
+data/
+
+# Workspace local
+workspace/
+
+# KVM images
+*.qcow2
+*.img
+*.iso
+
+# Logs
+*.log
+logs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Artefatos de campanha (contêm dados sensíveis de clientes)
+campaigns/*/artifacts/
+campaigns/*/evidence/
+campaigns/*/screenshots/
+
+# Claude Code settings locais
+.claude/settings.local.json
