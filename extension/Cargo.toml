@@ -1,0 +1,21 @@
+[package]
+name = "bellatrix-india-extension"
+version = "0.1.0"
+edition = "2021"
+# Extensão Zed compila para WASM — NÃO entra no workspace Cargo nativo.
+# Build: cargo build --target wasm32-wasi --release
+# O Zed carrega o .wasm gerado em target/wasm32-wasi/release/
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+# API oficial de extensões Zed
+zed_extension_api = "0.2"
+# Serialização de payloads MCP e findings
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+[profile.release]
+opt-level = "s"   # tamanho mínimo do .wasm
+strip = true

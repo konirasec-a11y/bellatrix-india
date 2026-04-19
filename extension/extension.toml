@@ -1,0 +1,21 @@
+id = "bellatrix-india"
+name = "Bellatrix India"
+description = "AI-powered offensive security platform for RedTeam and Bug Bounty — AppSec, Pentest, Malware Dev"
+version = "0.1.0"
+schema_version = 1
+authors = ["Bellatrix Team <konirasec@gmail.com>"]
+repository = "https://github.com/konira/bellatrix-india"
+
+[lib]
+kind = "WASM"
+
+# Context server: expõe vsc_backend como MCP server nativo do Zed.
+# O Zed AI assistant terá acesso a todos os 8 MCP tools automaticamente.
+[[context_servers]]
+name = "bellatrix"
+
+# Slash commands disponíveis no assistant panel do Zed
+[[slash_commands]]
+name = "bellatrix"
+description = "Controla a plataforma Bellatrix India: scan, campaign, report, intel"
+requires_argument = false

@@ -101,6 +101,14 @@ bellatrix-india/
 ├── bin/
 │   ├── orchestrator/             # daemon principal (gRPC + MCP STDIO)
 │   └── cli/                      # CLI headless para automação
+├── extension/                    # Extensão Zed (Rust/WASM) — pacote independente
+│   ├── Cargo.toml                # target: wasm32-wasi (não entra no workspace nativo)
+│   ├── extension.toml            # manifesto Zed (id, context_servers, slash_commands)
+│   └── src/
+│       ├── lib.rs                # entry point — implementa zed::Extension
+│       ├── context_server.rs     # configura vsc_backend como MCP context server
+│       ├── slash_commands.rs     # /bellatrix scan|campaign|report|intel
+│       └── diagnostics.rs        # Finding → LSP Diagnostic (overlay no editor)
 ├── docker/
 │   ├── compose.yml               # stack completa
 │   ├── orchestrator/Dockerfile
@@ -349,7 +357,77 @@ Scope Input (URL / domínio / repo)
 
 ---
 
-## 9. Relatório HackerOne
+## 9. Extensão Zed (Editor Integration)
+
+### 9.1 Por que Zed
+
+- Extensões escritas em **Rust compilado para WASM** — consistência total com o stack do projeto
+- Suporte nativo a **MCP Context Servers** — o `vsc_backend` é registrado diretamente como context server sem adaptadores
+- Assistant panel integrado — o operador conversa com os agentes dentro do editor
+- Debugger nativo via DAP — breakpoints automáticos nos sinks descobertos
+- Performance superior a VSCode para edição de arquivos grandes (binários, logs)
+
+### 9.2 Integração MCP (Context Server)
+
+```
+Zed Editor
+    │
+    ├── Assistant Panel ──► Context Server: vsc_backend (MCP STDIO)
+    │                            │
+    │                            └──► Todos os 8 MCP tools disponíveis
+    │                                 para o AI assistant dentro do Zed
+    │
+    ├── Slash Commands
+    │   ├── /bellatrix scan [file]     → SAST inline
+    │   ├── /bellatrix campaign [url]  → inicia campanha AppSec
+    │   ├── /bellatrix report          → gera relatório HackerOne
+    │   └── /bellatrix intel [query]   → query ao RAG
+    │
+    ├── Diagnostics (LSP overlay)
+    │   └── Findings aparecem como erros/warnings nas linhas do código
+    │       com severity color coding (Critical=vermelho, High=laranja...)
+    │
+    └── Breakpoints automáticos
+        └── Finding.sink_line → DAP breakpoint na linha do sink
+```
+
+### 9.3 Arquitetura da extensão
+
+```
+extension/                    (pacote WASM independente)
+├── extension.toml            manifesto Zed
+├── Cargo.toml                [lib] crate-type = ["cdylib"]
+└── src/
+    ├── lib.rs                impl zed::Extension — entry point
+    ├── context_server.rs     lança vsc_backend via docker exec
+    ├── slash_commands.rs     handlers de /bellatrix *
+    └── diagnostics.rs        Finding JSON → lsp_types::Diagnostic
+```
+
+### 9.4 Compatibilidade com outros editores
+
+| Editor | Suporte | Método |
+|---|---|---|
+| **Zed** | **Primário** | Extensão Rust/WASM nativa + MCP Context Server |
+| VSCode / VSCodium | Secundário | `vsc_backend` como MCP server via `mcp` config em settings.json |
+| Neovim | Comunidade | Plugin Lua consumindo MCP via `mcphub.nvim` |
+| JetBrains | Futuro | Plugin Kotlin (não planejado neste ciclo) |
+
+Para VSCode/VSCodium, nenhuma extensão custom é necessária — basta adicionar ao `settings.json`:
+```json
+{
+  "mcp.servers": {
+    "bellatrix": {
+      "command": "docker",
+      "args": ["compose", "-f", "docker/compose.yml", "exec", "-T", "orchestrator", "/app/vsc_backend"]
+    }
+  }
+}
+```
+
+---
+
+## 10. Relatório HackerOne
 
 ### 9.1 Campos obrigatórios gerados automaticamente
 
